@@ -1,0 +1,103 @@
+﻿@using PagedList.Core.Mvc
+@model PagedList.Core.IPagedList<FruityFresh.Models.Customer>
+
+@{
+    int CurrentPage = ViewBag.CurrentPage;
+    ViewData["Title"] = "List Customer";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Index : page @CurrentPage</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                No.
+            </th>
+            <th>
+                Username
+            </th>
+            <th>
+                Avatar
+            </th>
+            <th>
+                Address
+            </th>
+            <th>
+                Fullname
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Phone
+            </th>
+            <th>
+                Birthday
+            </th>
+            <th>
+                Last Login
+            </th>
+            <th>
+                Create At
+            </th>
+            <th>
+                Active
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CustomerId)
+                </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Username)
+            </td>
+            <td>
+                <img src="@Url.Content(item.Avatar)" width="50px" height="50px">
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Fullname)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Phone)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Birthday)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastLogin)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreatedAt)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Active)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.CustomerId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.CustomerId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.CustomerId">Delete</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
+<div aria-label="Page navigation example">
+    <ul class="pagination">
+        <pager class="pager-container" list="@Model" asp-area="Admin" asp-controller="AdminCustomers" asp-action="Index"></pager>
+    </ul>
+</div>

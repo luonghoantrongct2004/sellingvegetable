@@ -1,0 +1,180 @@
+﻿@using PagedList.Core.Mvc
+@model PagedList.Core.IPagedList<FruityFresh.Models.Product>
+
+@{
+    int CurrentPage = ViewBag.CurrentPage;
+    ViewData["Title"] = "List Product" + ViewBag.CurrentPage;
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2 class="jumbotron text-center bg-info">Product</h2>
+<p class="p">
+    <a class="createButton" asp-action="Create" style="--clr:#8A2BE2"><span>Create New</span><i></i></a>
+</p>
+<p><h4>Page @CurrentPage</h4></p>
+<hr/>
+<div class="col-md-8">
+<div class="row">
+    <div class="col-md-6">
+            <select class="form-control" id="txtCatId" asp-items="ViewBag.Category">
+            <option>Select Category</option>
+            <option value="0">All</option>
+        </select>
+    </div>
+    <div class="col-md-6">
+        <div class="input-affix min-vh-100">
+            <i class="prefix-icon anticon anicon-search opacity-04"></i>
+                <input name="keyword" id="keyword" type="search" class="form-control" placeholder="Tìm kiếm" />
+        </div>
+    </div>
+</div>
+</div>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                ProductName
+            </th>
+            <th>
+                Title
+            </th>
+            <th>
+                Description
+            </th>
+            <th>
+                Price
+            </th>
+            <th>
+                Stock Quantity
+            </th>
+            <th>
+                CreatedAt
+            </th>
+            <th>
+                Category
+            </th>
+        </tr>
+    </thead>
+    <tbody id="recordstable">
+        @if(Model != null){
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ProductName)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Title)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Description)
+                </td>
+
+                @if (item.Price.HasValue)
+                {
+                    <td>
+                        @item.Price.Value.ToString("#,##0") VND
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        @item.Price
+                    </td>
+                    }@if (item.Active != null)
+                    {
+                        @if (item.StockQuantity > 0)
+                        {
+
+                            <td>
+                                Active
+                            </td>
+                        }
+                        else
+                        {
+                            <td>
+                                No Active
+                            </td>
+                        }
+                    }
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreatedAt)
+                </td>
+                
+                <td>
+                    @Html.DisplayFor(modelItem => item.Category.CategoryName)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.ProductId">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.ProductId">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.ProductId">Delete</a>
+                </td>
+            </tr>
+        }
+        }
+    </tbody>
+</table>
+<div aria-label="Page navigation example">
+    <ul class="pagination">
+        <pager class="pager-container" list="@Model" asp-area="Admin" asp-controller="AdminProducts" asp-route-CategoryId="@ViewBag.CurrentCatId" asp-action="Index" />
+    </ul>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#txtCatId').change(function () {
+                var catId = $(this).val();
+                var currentPage = @ViewBag.CurrentPage;
+                var redirectUrl = '/Admin/AdminProducts?CategoryId=' + catId + '&page=' + currentPage;
+                window.location.href = redirectUrl;
+                $.ajax({
+                    url: '/Admin/AdminProducts/Filter',
+                    dataType: 'json',
+                    type: 'GET',
+                    data: {
+                        CategoryId: catId
+                    },
+                    async: true,
+                    success: function (results) {
+                        if (results.status === 'success') {
+                            window.location.href = results.redirectUrl;
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log(status);
+                        console.log(error);
+                        console.log(xhr.responseText);
+                    }
+                });
+            });
+        });
+    </script>
+    <script>
+        //search product
+        var initialData = $("#recordstable").html();
+        $(document).ready(function () {
+            $("#keyword").on('keyup', function () {
+                var strKeyword = $('#keyword').val();
+                if (strKeyword === '') {
+                    $("#recordstable").html(initialData);
+                } else {
+                    $.ajax({
+                        url: '/Admin/Search/FindProduct',
+                        dataType: "html",
+                        type: "POST",
+                        data: { keyword: strKeyword },
+                        async: true,
+                        success: function (results) {
+                            $("#recordstable").html(results != null ? results : "Không tìm thấy ~~");
+                        },
+                        error: function (xhr, status, error) {
+                            alert(error)
+                            console.log("Error occurred: " + error);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+}
+

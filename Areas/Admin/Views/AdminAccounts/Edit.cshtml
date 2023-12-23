@@ -1,0 +1,71 @@
+﻿@model FruityFresh.Models.AdminAccount
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<h2>Edit</h2>
+
+<h4>AdminAccount</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-controller="AdminAccounts" asp-action="Edit" method="post" enctype="multipart/form-data">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="AdminId" />
+            <div class="form-group">
+                <label asp-for="FullName" class="control-label"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Email" class="control-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Phone" class="control-label"></label>
+                <input asp-for="Phone" class="form-control" />
+                <span asp-validation-for="Phone" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="LastLogin" class="control-label"></label>
+                <input asp-for="LastLogin" class="form-control" />
+                <span asp-validation-for="LastLogin" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Avatar" class="control-label"></label>
+                @if (Model.Avatar == null)
+                {
+                    <input asp-for="Avatar" type="file" class="form-control" name="fileThumb" />
+                    <span asp-validation-for="Avatar" class="text-danger"></span>
+                }
+                else
+                {
+                    <img src="@Model.Avatar" alt="Avatar" width="100px" height="50px" />
+                    <input asp-for="Avatar" type="file" class="form-control" name="fileThumb" />
+                    <span asp-validation-for="Avatar" class="text-danger"></span>
+                }
+            </div>
+            <div class="form-group">
+                <label asp-for="CreatedAt" class="control-label"></label>
+                <input asp-for="CreatedAt" class="form-control" />
+                <span asp-validation-for="CreatedAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DeletedAt" class="control-label"></label>
+                <input asp-for="DeletedAt" class="form-control" />
+                <span asp-validation-for="DeletedAt" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-default" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
